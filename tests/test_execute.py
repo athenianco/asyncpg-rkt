@@ -152,7 +152,7 @@ class TestExecuteMany(tb.ConnectedTestCase):
         with self.assertRaisesRegex(
             exceptions.DataError,
             r"invalid input for query argument \$1 in element #1 of "
-            r"executemany\(\) sequence: 'bad'",
+            r"executemany\(\) sequence of type int4: 'bad'",
         ):
             await self.con.executemany('''
                 INSERT INTO exmany (b) VALUES($1)
