@@ -767,7 +767,8 @@ class TestCodecs(tb.ConnectedTestCase):
             for sample in data:
                 with self.subTest(sample=sample, typname=typname):
                     full_errmsg = (
-                        r'invalid input for query argument \$1:.*' + errmsg)
+                        r'invalid input for query argument \$1 of type '
+                        r'[a-z0-9]+:.*' + errmsg)
 
                     with self.assertRaisesRegex(
                             asyncpg.DataError, full_errmsg):
