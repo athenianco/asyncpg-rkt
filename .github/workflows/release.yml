@@ -36,13 +36,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        cibw_python: [ "cp37-*", "cp38-*", "cp39-*", "cp310-*" ]
-        cibw_arch: [ "auto64", "auto32" ]
-        exclude:
-        - os: macos-latest
-          cibw_arch: "auto32"
-        - os: ubuntu-latest
-          cibw_arch: "auto32"
+        cibw_python: [ "cp38-*", "cp39-*", "cp310-*", "cp311-*" ]
+        cibw_arch: [ "auto64" ]
 
     defaults:
       run:
@@ -57,7 +52,7 @@ jobs:
         fetch-depth: 50
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.8.0
+    - uses: pypa/cibuildwheel@v2.11.2
       env:
         CIBW_BUILD_VERBOSITY: 1
         CIBW_BUILD: ${{ matrix.cibw_python }}
