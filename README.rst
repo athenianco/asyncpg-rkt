@@ -14,21 +14,22 @@ framework.  You can read more about asyncpg in an introductory
 `blog post <http://magic.io/blog/asyncpg-1m-rows-from-postgres-to-python/>`_.
 
 **asyncpg-rkt** extends **asyncpg** as follows:
-- Backward compatible with the origin.
-- It is possible to set the numpy dtype for the fetched query.
-- Such "typed" queries return numpy arrays instead of lists of Record objects.
-- We construct numpy arrays directly from the low-level PostgreSQL protocol, without materializing any Python objects.
-- Although, we support `object` fields, too.
-- The time from receiving the response from PostgreSQL server until `Connection.fetch()` returns is ~20x less.
+
+* Backward compatible with the origin.
+* It is possible to set the numpy dtype for the fetched query.
+* Such "typed" queries return numpy arrays instead of lists of Record objects.
+* We construct numpy arrays directly from the low-level PostgreSQL protocol, without materializing any Python objects.
+* Although, we support `object` fields, too.
+* The time from receiving the response from PostgreSQL server until `Connection.fetch()` returns is ~20x less.
 This is because we avoid the overhead of dealing with Python objects in the result.
-- We return `ravel()`-ed indexes of nulls while writing NaN-s/NaT-s at the corresponding places in the array.
-- There is an option to return data by column vs. by row.
+* We return `ravel()`-ed indexes of nulls while writing NaN-s/NaT-s at the corresponding places in the array.
+* There is an option to return data by column vs. by row.
 
 **asyncpg-rkt** provides the best performance when there are thousands of rows returned and the field types map to numpy.
 
 Read the blog post with the introduction.
 
-asyncpg-🚀 requires Python 3.7 or later and is supported for PostgreSQL
+asyncpg-🚀 requires Python 3.8 or later and is supported for PostgreSQL
 versions 9.5 to 14.  Older PostgreSQL versions or other databases implementing
 the PostgreSQL protocol *may* work, but are not being actively tested.
 
