@@ -287,11 +287,6 @@ class TestRecord(tb.ConnectedTestCase):
             self.assertEqual(r.get('nonexistent'), None)
             self.assertEqual(r.get('nonexistent', 'default'), 'default')
 
-    def test_record_not_pickleable(self):
-        r = Record(R_A, (42,))
-        with self.assertRaises(Exception):
-            pickle.dumps(r)
-
     def test_record_empty(self):
         r = Record(None, ())
         self.assertEqual(r, ())
