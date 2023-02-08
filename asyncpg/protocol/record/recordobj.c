@@ -23,8 +23,6 @@ static int numfree[ApgRecord_MAXSAVESIZE];
 static PyObject *record_reconstruct_obj;
 static PyObject *record_desc_reconstruct_obj;
 
-static PyMethodDef record_desc_methods[];
-
 static size_t MAX_RECORD_SIZE = (
     ((size_t)PY_SSIZE_T_MAX - sizeof(ApgRecordObject) - sizeof(PyObject *))
     / sizeof(PyObject *)
@@ -662,7 +660,6 @@ static PyMappingMethods record_as_mapping = {
     0                                                /* mp_ass_subscript */
 };
 
-static PyMethodDef record_methods[];
 
 static PyObject *
 record_reduce(ApgRecordObject *o, PyObject *Py_UNUSED(unused))
@@ -1006,44 +1003,6 @@ record_new_items_iter(PyObject *seq)
 }
 
 
-PyObject *
-ApgRecord_InitTypes(void)
-{
-    if (PyType_Ready(&ApgRecord_Type) < 0) {
-        return NULL;
-    }
-
-    if (PyType_Ready(&ApgRecordDesc_Type) < 0) {
-        return NULL;
-    }
-
-    if (PyType_Ready(&ApgRecordIter_Type) < 0) {
-        return NULL;
-    }
-
-    if (PyType_Ready(&ApgRecordItems_Type) < 0) {
-        return NULL;
-    }
-
-    record_reconstruct_obj = PyCFunction_New(
-        &record_methods[5], (PyObject *)&ApgRecord_Type
-    );
-    record_desc_reconstruct_obj = PyCFunction_New(
-        &record_desc_methods[1], (PyObject *)&ApgRecordDesc_Type
-    );
-
-	PyObject *types = PyTuple_New(2);
-	if (types == NULL) {
-	    return NULL;
-	}
-	PyTuple_SET_ITEM(types, 0, (PyObject *)&ApgRecord_Type);
-	Py_INCREF(&ApgRecord_Type);
-	PyTuple_SET_ITEM(types, 1, (PyObject *)&ApgRecordDesc_Type);
-	Py_INCREF(&ApgRecordDesc_Type);
-    return types;
-}
-
-
 /* ----------------- */
 
 
@@ -1140,4 +1099,42 @@ ApgRecordDesc_New(PyObject *mapping, PyObject *keys)
 
     PyObject_GC_Track(o);
     return (PyObject *) o;
+}
+
+
+PyObject *
+ApgRecord_InitTypes(void)
+{
+    if (PyType_Ready(&ApgRecord_Type) < 0) {
+        return NULL;
+    }
+
+    if (PyType_Ready(&ApgRecordDesc_Type) < 0) {
+        return NULL;
+    }
+
+    if (PyType_Ready(&ApgRecordIter_Type) < 0) {
+        return NULL;
+    }
+
+    if (PyType_Ready(&ApgRecordItems_Type) < 0) {
+        return NULL;
+    }
+
+    record_reconstruct_obj = PyCFunction_New(
+        &record_methods[5], (PyObject *)&ApgRecord_Type
+    );
+    record_desc_reconstruct_obj = PyCFunction_New(
+        &record_desc_methods[1], (PyObject *)&ApgRecordDesc_Type
+    );
+
+	PyObject *types = PyTuple_New(2);
+	if (types == NULL) {
+	    return NULL;
+	}
+	PyTuple_SET_ITEM(types, 0, (PyObject *)&ApgRecord_Type);
+	Py_INCREF(&ApgRecord_Type);
+	PyTuple_SET_ITEM(types, 1, (PyObject *)&ApgRecordDesc_Type);
+	Py_INCREF(&ApgRecordDesc_Type);
+    return types;
 }
