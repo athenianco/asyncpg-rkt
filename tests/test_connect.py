@@ -14,7 +14,6 @@ import platform
 import shutil
 import ssl
 import stat
-import sys
 import tempfile
 import textwrap
 import unittest
@@ -1288,6 +1287,7 @@ class BaseTestSSLConnection(tb.ConnectedTestCase):
 
         create_script = []
         create_script.append('CREATE ROLE ssl_user WITH LOGIN;')
+        create_script.append('GRANT ALL ON SCHEMA public TO ssl_user;')
 
         self._add_hba_entry()
 
@@ -1302,6 +1302,7 @@ class BaseTestSSLConnection(tb.ConnectedTestCase):
         self.cluster.trust_local_connections()
 
         drop_script = []
+        drop_script.append('REVOKE ALL ON SCHEMA public FROM ssl_user;')
         drop_script.append('DROP ROLE ssl_user;')
         drop_script = '\n'.join(drop_script)
         self.loop.run_until_complete(self.con.execute(drop_script))
@@ -1462,14 +1463,10 @@ class TestSSLConnection(BaseTestSSLConnection):
             )
         finally:
             try:
-                await con.execute('DROP TABLE test_many')
+                await con.execute('DROP TABLE IF EXISTS test_many')
             finally:
                 await con.close()
 
-    @unittest.skipIf(
-        sys.version_info < (3, 7),
-        "Python < 3.7 doesn't have ssl.TLSVersion"
-    )
     async def test_tls_version(self):
         if self.cluster.get_pg_version() < (12, 0):
             self.skipTest("PostgreSQL < 12 cannot set ssl protocol version")
@@ -1500,13 +1497,14 @@ class TestSSLConnection(BaseTestSSLConnection):
                             '&ssl_min_protocol_version=TLSv1.1'
                             '&ssl_max_protocol_version=TLSv1.1'
                     )
-                with self.assertRaisesRegex(ssl.SSLError, 'no protocols'):
-                    await self.connect(
-                        dsn='postgresql://ssl_user@localhost/postgres'
-                            '?sslmode=require'
-                            '&ssl_min_protocol_version=TLSv1.2'
-                            '&ssl_max_protocol_version=TLSv1.1'
-                    )
+                if not ssl.OPENSSL_VERSION.startswith('LibreSSL'):
+                    with self.assertRaisesRegex(ssl.SSLError, 'no protocols'):
+                        await self.connect(
+                            dsn='postgresql://ssl_user@localhost/postgres'
+                                '?sslmode=require'
+                                '&ssl_min_protocol_version=TLSv1.2'
+                                '&ssl_max_protocol_version=TLSv1.1'
+                        )
                 con = await self.connect(
                     dsn='postgresql://ssl_user@localhost/postgres'
                         '?sslmode=require'
