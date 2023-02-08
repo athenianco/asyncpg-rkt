@@ -575,3 +575,11 @@ class TestRecord(tb.ConnectedTestCase):
             'record_class is expected to be a subclass of asyncpg.Record',
         ):
             await self.connect(record_class=MyRecordBad)
+
+    def test_record_pickle(self):
+        r = pickle.loads(pickle.dumps(Record(R_AB, (42, 43))))
+        self.assertEqual(len(r), 2)
+        self.assertEqual(r[0], 42)
+        self.assertEqual(r[1], 43)
+        self.assertEqual(r['a'], 42)
+        self.assertEqual(r['b'], 43)
