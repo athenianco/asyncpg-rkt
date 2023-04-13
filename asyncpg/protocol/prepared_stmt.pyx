@@ -410,7 +410,7 @@ cdef class PreparedStatementState:
             return
         self.dtype = pickle.loads(bytes.fromhex(query[pos:end]))
         assert isinstance(self.dtype, np_dtype)
-        self.query = query[end + 2:]
+        self.query = query[:pos - 3] + query[end + 2:]
 
 cdef _decode_parameters_desc(object desc):
     cdef:
