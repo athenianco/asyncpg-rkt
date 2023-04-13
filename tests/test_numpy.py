@@ -242,7 +242,7 @@ class TestCodecsNumpy(tb.ConnectedTestCase):
                     f"FROM generate_series(1, {length}) i"
 
             stmt = await self.con.prepare(
-                set_query_dtype(query, dtype)
+                f"--skip\n{set_query_dtype(query, dtype)}"
             )
             with self.subTest(length=length):
                 fetched_array, fetched_nulls = await stmt.fetch()
