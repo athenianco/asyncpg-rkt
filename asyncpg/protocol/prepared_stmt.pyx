@@ -392,7 +392,7 @@ cdef class PreparedStatementState:
         cdef str query = self.query
         pos = 0
         while query.startswith("--", pos):
-            if query.startswith("🚀", pos + 2):
+            if query.startswith("�", pos + 2):
                 pos += 3
                 break
             else:
@@ -404,7 +404,7 @@ cdef class PreparedStatementState:
         else:
             self.dtype = None
             return
-        end = query.find("🚀\n", pos)
+        end = query.find("�\n", pos)
         if end < 0:
             self.dtype = None
             return

@@ -23,4 +23,4 @@ def set_query_dtype(query: str, dtype: Union[bytes, str, np.dtype]) -> str:
         # we cannot write a pointer because the object is not referenced
         # directly from the string and may die
         serialized_dtype = pickle.dumps(dtype).hex()
-    return f"--🚀{serialized_dtype}🚀\n{query}"
+    return f"--�{serialized_dtype}�\n{query}"

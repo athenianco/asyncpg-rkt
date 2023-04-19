@@ -10,8 +10,8 @@ class TestRocket(tb.TestCase):
         query = "SELECT 1, 1"
         dtype = np.dtype([("a", int), ("b", int)])
         augmented_query = set_query_dtype(query, dtype)
-        self.assertEqual(augmented_query[:3], "--🚀")
-        end = augmented_query.find("🚀\n", 1)
+        self.assertEqual(augmented_query[:3], "--�")
+        end = augmented_query.find("�\n", 1)
         header = augmented_query[3:end]
         self.assertEqual(augmented_query[end + 2:], query)
         for char in header:
